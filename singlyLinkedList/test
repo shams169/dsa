@@ -1,0 +1,91 @@
+package main
+
+import (
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+)
+
+var _ = Describe("Append", func() {
+	var ll *SinglyLinkedList
+
+	BeforeEach(func() {
+		ll = new(SinglyLinkedList)
+	})
+
+	Context("When the list is empty", func() {
+		It("Should add the element as the head and tail", func() {
+			ll.Append(10)
+			Expect(ll.Head).NotTo(BeNil())
+			Expect(ll.Tail).NotTo(BeNil())
+			Expect(ll.Head.Data).To(Equal(10))
+			Expect(ll.Tail.Data).To(Equal(10))
+			Expect(ll.Head.Next).To(BeNil())
+		})
+	})
+
+	Context("When the list is not empty", func() {
+		BeforeEach(func() {
+			ll.Append(5)
+		})
+
+		It("Should add the element to the end of the list", func() {
+			ll.Append(15)
+			Expect(ll.Head).NotTo(BeNil())
+			Expect(ll.Tail).NotTo(BeNil())
+			Expect(ll.Head.Data).To(Equal(5))
+			Expect(ll.Tail.Data).To(Equal(15))
+			Expect(ll.Head.Next).To(Equal(ll.Tail))
+			Expect(ll.Tail.Next).To(BeNil())
+		})
+
+		It("Should update the tail correctly after multiple appends", func() {
+			ll.Append(10)
+			ll.Append(20)
+			ll.Append(30)
+			Expect(ll.Head.Data).To(Equal(5))
+			Expect(ll.Tail.Data).To(Equal(30))
+			Expect(ll.Tail.Next).To(BeNil())
+			Expect(ll.Head.Next.Data).To(Equal(10))
+			Expect(ll.Head.Next.Next.Data).To(Equal(20))
+            Expect(ll.Head.Next.Next.Next).To(Equal(ll.Tail))
+		})
+		
+	})
+	Context("When appending negative value", func() {
+		It("Should add the negative element at the end of the list", func(){
+			ll.Append(-5)
+			Expect(ll.Head.Data).To(Equal(-5))
+			Expect(ll.Tail.Data).To(Equal(-5))
+			Expect(ll.Head.Next).To(BeNil())
+			Expect(ll.Tail.Next).To(BeNil())
+		})
+
+		It("Should add negative element at the end of list when list is not empty", func(){
+			ll.Append(10)
+			ll.Append(20)
+			ll.Append(-5)
+			Expect(ll.Head.Data).To(Equal(10))
+			Expect(ll.Tail.Data).To(Equal(-5))
+		})
+	})
+
+    Context("When appending zero value", func(){
+        It("Should append the zero value when list is empty", func(){
+            ll.Append(0)
+            Expect(ll.Head.Data).To(Equal(0))
+            Expect(ll.Tail.Data).To(Equal(0))
+            Expect(ll.Head.Next).To(BeNil())
+            Expect(ll.Tail.Next).To(BeNil())
+        })
+
+        It("Should add zero value at the end of list when list is not empty", func(){
+            ll.Append(1)
+            ll.Append(0)
+            Expect(ll.Head.Data).To(Equal(1))
+            Expect(ll.Tail.Data).To(Equal(0))
+			Expect(ll.Tail.Next).To(BeNil())
+        })
+    })
+
+})
+

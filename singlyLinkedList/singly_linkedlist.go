@@ -16,24 +16,20 @@ type SinglyLinkedList struct {
 
 func (ll *SinglyLinkedList) Append(data int) {
 	// Prepare a node with the data
-	temp := Node{
+	temp := &Node{
 		Data: data,
 		Next: nil,
 	}
 
 	// Check if the list is empty
 	if ll.Head == nil {
-		ll.Head = &temp
+		ll.Head = temp
+		ll.Tail = temp
 		return
 	}
 
-	// If we have nodes in the list we have to iterate to the last one
-	curr := ll.Head
-	for curr.Next != nil {
-		curr = curr.Next
-	}
-	curr.Next = &temp
-	ll.Tail = curr.Next
+	ll.Tail.Next = temp
+	ll.Tail = temp
 }
 
 func (ll *SinglyLinkedList) InsertAt(data, index int) error {
@@ -55,6 +51,7 @@ func (ll *SinglyLinkedList) InsertAt(data, index int) error {
 
 	if index == 0 && ll.Head == nil {
 		ll.Head = temp
+		ll.Tail = temp
 		return nil
 	}
 
@@ -75,6 +72,10 @@ func (ll *SinglyLinkedList) InsertAt(data, index int) error {
 	temp.Next = curr.Next
 	curr.Next = temp
 
+	if temp.Next == nil {
+		ll.Tail = temp
+	}
+
 	return nil
 }
 
@@ -92,7 +93,6 @@ func (ll *SinglyLinkedList) Size() int {
 }
 
 func (ll *SinglyLinkedList) ValueAt(index int) int {
-
 	//Check if the list is empty
 	if ll.Head == nil {
 		fmt.Printf("list is empty")
@@ -117,6 +117,65 @@ func (ll *SinglyLinkedList) ValueAt(index int) int {
 
 }
 
+func (ll *SinglyLinkedList) PushFront(data int) {
+	temp := &Node{
+		Data: data,
+		Next: nil,
+	}
+
+	// Check if the list is empty:
+	if ll.Head == nil {
+		ll.Head = temp
+		return
+	}
+	temp.Next = ll.Head
+	ll.Head = temp
+}
+
+func (ll *SinglyLinkedList) PushBack(data int) {
+	temp := &Node{
+		Data: data,
+		Next: nil,
+	}
+
+	// Check if the list is empty:
+	if ll.Head == nil {
+		ll.Head = temp
+		ll.Tail = temp
+		return
+	}
+
+	ll.Tail.Next = temp
+	ll.Tail = temp
+}
+
+func (ll *SinglyLinkedList) Reverse() {
+	//Check if the list is empty
+	if ll.Head == nil {
+		fmt.Println("list is empty")
+		return
+	}
+
+	// Check if the list has only one element
+	if ll.Size() == 1 {
+		fmt.Println("List has only one element")
+		return
+	}
+
+	var prev *Node
+	curr := ll.Head
+	ll.Tail = ll.Head
+
+	for curr != nil {
+		temp := curr.Next
+		curr.Next = prev
+		prev = curr
+		curr = temp
+	}
+	ll.Head = prev
+
+}
+
 func (ll *SinglyLinkedList) PrintSinglyLL() {
 	temp := ll.Head
 	if temp == nil {
@@ -127,5 +186,19 @@ func (ll *SinglyLinkedList) PrintSinglyLL() {
 		fmt.Printf("Data at %d: %d\n", index, temp.Data)
 		temp = temp.Next
 		index++
+	}
+}
+
+func (ll *SinglyLinkedList) PrintHeadTail() {
+	if ll.Head != nil {
+		fmt.Printf("Head: %d\n", ll.Head.Data)
+	} else {
+		fmt.Println("Head: nil")
+	}
+	if ll.Tail != nil {
+		fmt.Printf("Tail: %d\n", ll.Tail.Data)
+
+	} else {
+		fmt.Println("Tail: nil")
 	}
 }
